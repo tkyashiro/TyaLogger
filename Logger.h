@@ -4,6 +4,12 @@
 #include <string>
 #include <memory>
 
+#include <spdlog/common.h>
+
+namespace spdlog {
+class logger;
+}
+
 namespace TYA {
 
 enum class LogLevel
@@ -29,12 +35,12 @@ public:
     static Logger get(const std::string &name = std::string());
     static void setLogLevel(LogLevel l);
 
-    inline void trace(const char *file, const char *func, uint32_t line, const char *message);
-    inline void debug(const char *file, const char *func, uint32_t line, const char *message);
-    inline void info(const char *file, const char *func, uint32_t line, const char *message);
-    inline void warn(const char *file, const char *func, uint32_t line, const char *message);
-    inline void error(const char *file, const char *func, uint32_t line, const char *message);
-    inline void critical(const char *file, const char *func, uint32_t line, const char *message);
+    void trace(const char *file, const char *func, uint32_t line, const char *message);
+    void debug(const char *file, const char *func, uint32_t line, const char *message);
+    void info(const char *file, const char *func, uint32_t line, const char *message);
+    void warn(const char *file, const char *func, uint32_t line, const char *message);
+    void error(const char *file, const char *func, uint32_t line, const char *message);
+    void critical(const char *file, const char *func, uint32_t line, const char *message);
 
     template <typename... Args> void trace(const char *file, const char *func, uint32_t line, const char *fmt, const Args... args);
     template <typename... Args> void debug(const char *file, const char *func, uint32_t line, const char *fmt, const Args... args);
@@ -48,11 +54,14 @@ public:
 protected:
     void log(LogLevel level, const char *file, const char *func, uint32_t line, const char *message);
     template <typename... Args> void log(LogLevel level, const char *file, const char *func, uint32_t line, const char* fmt, const Args&... args);
+
+private:
+    std::shared_ptr<spdlog::logger> logger_;
+
 private:
     Logger(const std::string &name = std::string());
-private:
-    class Impl;
-    std::shared_ptr<Impl> impl_;
+    static spdlog::level::level_enum map(LogLevel l);
+    std::string format(const char *file, const char *func, uint32_t line, const char *message);
 };
 
 }
