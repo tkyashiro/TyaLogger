@@ -9,20 +9,36 @@ class LoggingTest : public QObject
     Q_OBJECT
 
 private slots:
-    void test1();
+    void testMessage();
+    void testFormat();
 };
 
-void LoggingTest::test1(){
+void LoggingTest::testMessage(){
     Logger::setLogLevel(LogLevel::Trace);
 
     Logger logger = Logger::get("console");
 
-    TRACE(logger, "hoge hoge");
-    DEBUG(logger, "hoge hoge");
-    INFO(logger, "hoge hoge");
-    WARN(logger, "hoge hoge");
-    ERROR(logger, "hoge hoge");
-    CRITICAL(logger, "hoge hoge");
+    TYA_TRACE(logger, "hoge hoge");
+    TYA_DEBUG(logger, "hoge hoge");
+    TYA_INFO(logger, "hoge hoge");
+    TYA_WARN(logger, "hoge hoge");
+    TYA_ERROR(logger, "hoge hoge");
+    TYA_CRITICAL(logger, "hoge hoge");
+
+    logger.flush();
+}
+
+void LoggingTest::testFormat(){
+    Logger::setLogLevel(LogLevel::Trace);
+
+    Logger logger = Logger::get("console");
+
+    TYA_TRACE(logger, "Trace {}", "formatter");
+    TYA_DEBUG(logger, "Debug {}", __PRETTY_FUNCTION__);
+    TYA_INFO(logger, "Info {}@{}", __FILE__, __LINE__);
+    TYA_WARN(logger, "Warn {}", 666);
+    TYA_ERROR(logger, "Error {}", 12.3);
+    TYA_CRITICAL(logger, "Critical {}", std::string("Critical!"));
 
     logger.flush();
 }

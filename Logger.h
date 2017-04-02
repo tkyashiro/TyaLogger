@@ -16,23 +16,12 @@ enum class LogLevel
     Critical = 0x20,
 };
 
-#define TRACE(logger, message) \
-    logger.trace(__FILE__, __PRETTY_FUNCTION__, __LINE__, message)
-
-#define DEBUG(logger, message) \
-    logger.debug(__FILE__, __PRETTY_FUNCTION__, __LINE__, message)
-
-#define INFO(logger, message) \
-    logger.info(__FILE__, __PRETTY_FUNCTION__, __LINE__, message)
-
-#define WARN(logger, message) \
-    logger.warn(__FILE__, __PRETTY_FUNCTION__, __LINE__, message)
-
-#define ERROR(logger, message) \
-    logger.error(__FILE__, __PRETTY_FUNCTION__, __LINE__, message)
-
-#define CRITICAL(logger, message) \
-    logger.critical(__FILE__, __PRETTY_FUNCTION__, __LINE__, message)
+#define TYA_TRACE(logger, message, ...)    logger.trace(__FILE__, __PRETTY_FUNCTION__, __LINE__, message, ##__VA_ARGS__)
+#define TYA_DEBUG(logger, message, ...)    logger.debug(__FILE__, __PRETTY_FUNCTION__, __LINE__, message, ##__VA_ARGS__)
+#define TYA_INFO(logger, message, ...)     logger.info(__FILE__, __PRETTY_FUNCTION__, __LINE__, message, ##__VA_ARGS__)
+#define TYA_WARN(logger, message, ...)     logger.warn(__FILE__, __PRETTY_FUNCTION__, __LINE__, message, ##__VA_ARGS__)
+#define TYA_ERROR(logger, message, ...)    logger.error(__FILE__, __PRETTY_FUNCTION__, __LINE__, message, ##__VA_ARGS__)
+#define TYA_CRITICAL(logger, message, ...) logger.critical(__FILE__, __PRETTY_FUNCTION__, __LINE__, message, ##__VA_ARGS__)
 
 class Logger
 {
@@ -40,40 +29,25 @@ public:
     static Logger get(const std::string &name = std::string());
     static void setLogLevel(LogLevel l);
 
-    inline void trace(const char *file, const char *func, uint32_t line, const char *message)
-    {
-        log(LogLevel::Trace, file, func, line, message);
-    }
+    inline void trace(const char *file, const char *func, uint32_t line, const char *message);
+    inline void debug(const char *file, const char *func, uint32_t line, const char *message);
+    inline void info(const char *file, const char *func, uint32_t line, const char *message);
+    inline void warn(const char *file, const char *func, uint32_t line, const char *message);
+    inline void error(const char *file, const char *func, uint32_t line, const char *message);
+    inline void critical(const char *file, const char *func, uint32_t line, const char *message);
 
-    inline void debug(const char *file, const char *func, uint32_t line, const char *message)
-    {
-        log(LogLevel::Debug, file, func, line, message);
-    }
-
-    inline void info(const char *file, const char *func, uint32_t line, const char *message)
-    {
-        log(LogLevel::Info, file, func, line, message);
-    }
-
-    inline void warn(const char *file, const char *func, uint32_t line, const char *message)
-    {
-        log(LogLevel::Warn, file, func, line, message);
-    }
-
-    inline void error(const char *file, const char *func, uint32_t line, const char *message)
-    {
-        log(LogLevel::Error, file, func, line, message);
-    }
-
-    inline void critical(const char *file, const char *func, uint32_t line, const char *message)
-    {
-        log(LogLevel::Critical, file, func, line, message);
-    }
-
-    void log(LogLevel level, const char *file, const char *func, uint32_t line, const char *message);
+    template <typename... Args> void trace(const char *file, const char *func, uint32_t line, const char *fmt, const Args... args);
+    template <typename... Args> void debug(const char *file, const char *func, uint32_t line, const char *fmt, const Args... args);
+    template <typename... Args> void info(const char *file, const char *func, uint32_t line, const char *fmt, const Args... args);
+    template <typename... Args> void warn(const char *file, const char *func, uint32_t line, const char *fmt, const Args... args);
+    template <typename... Args> void error(const char *file, const char *func, uint32_t line, const char *fmt, const Args... args);
+    template <typename... Args> void critical(const char *file, const char *func, uint32_t line, const char *fmt, const Args... args);
 
     void flush();
 
+protected:
+    void log(LogLevel level, const char *file, const char *func, uint32_t line, const char *message);
+    template <typename... Args> void log(LogLevel level, const char *file, const char *func, uint32_t line, const char* fmt, const Args&... args);
 private:
     Logger(const std::string &name = std::string());
 private:
@@ -83,5 +57,6 @@ private:
 
 }
 
+#include "Logger.hpp"
 
 #endif
