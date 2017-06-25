@@ -12,9 +12,15 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BINDIR})
 add_subdirectory(spdlog)
 
 set(TyaLogger_SOURCES
+    TyaLoggerExport.h
     Logger.cpp
     )
-add_library(TyaLogger ${TyaLogger_SOURCES})
+
+add_definitions(-DYTA_BUILD_LOGGER)
+add_library(TyaLogger SHARED ${TyaLogger_SOURCES})
+remove_definitions(-DYTA_BUILD_LOGGER)
+
+add_library(TyaLogger_s STATIC ${TyaLogger_SOURCES})
 include_directories(spdlog/include)
 
 ######### for unit tests #########
@@ -33,7 +39,7 @@ set(testfiles
 foreach(testfile ${testfiles})
     get_filename_component(testname ${testfile} NAME_WE)
     add_executable(${testname} ${testfile})
-    target_link_libraries(${testname} TyaLogger)
+    target_link_libraries(${testname} TyaLogger_s)
     QT5_USE_MODULES(${testname} Test)
 
     add_test(${testname} ${BINDIR}/${testname})

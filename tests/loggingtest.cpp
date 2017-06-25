@@ -16,7 +16,7 @@ private slots:
 void LoggingTest::testMessage(){
     Logger::setLogLevel(LogLevel::Trace);
 
-    Logger logger = Logger::get("console");
+    Logger logger;
 
     TYA_TRACE(logger, "hoge hoge");
     TYA_DEBUG(logger, "hoge hoge");
@@ -31,7 +31,7 @@ void LoggingTest::testMessage(){
 void LoggingTest::testFormat(){
     Logger::setLogLevel(LogLevel::Trace);
 
-    Logger logger = Logger::get("console");
+    Logger logger;
 
     TYA_TRACE(logger, "Trace {}", "formatter");
     TYA_DEBUG(logger, "Debug {}", __PRETTY_FUNCTION__);
