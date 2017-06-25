@@ -45,4 +45,4 @@ void LoggingTest::testFormat(){
 
 QTEST_APPLESS_MAIN(LoggingTest)
 
-#include "loggingtest.moc"
+#include "loggingTest.moc"
